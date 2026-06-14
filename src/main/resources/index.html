@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>合家云社区物业管理系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #eef3fb;
+            color: #263445;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 220px;
+            background: linear-gradient(180deg, #1e3a8a 0%, #10214f 100%);
+            color: #fff;
+            padding: 24px 16px;
+        }
+
+        .brand {
+            margin-bottom: 28px;
+        }
+
+        .brand h1 {
+            font-size: 20px;
+            line-height: 1.4;
+            margin-bottom: 8px;
+        }
+
+        .nav-btn {
+            width: 100%;
+            border: 0;
+            color: rgba(255,255,255,.82);
+            background: transparent;
+            padding: 12px 14px;
+            border-radius: 10px;
+            text-align: left;
+            cursor: pointer;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .nav-btn:hover,
+        .nav-btn.active {
+            background: rgba(255,255,255,.16);
+            color: #fff;
+        }
+
+        .main {
+            flex: 1;
+            padding: 24px;
+            overflow-x: auto;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .topbar h2 {
+            font-size: 26px;
+            margin-bottom: 8px;
+        }
+
+        .topbar p {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .status-pill {
+            background: #fff;
+            border: 1px solid #dbe5f3;
+            color: #426083;
+            border-radius: 999px;
+            padding: 8px 14px;
+            font-size: 13px;
+            box-shadow: 0 8px 24px rgba(30,58,138,.08);
+            white-space: nowrap;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(160px, 1fr));
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 18px;
+            box-shadow: 0 8px 24px rgba(30,58,138,.08);
+        }
+
+        .card .label {
+            color: #6b7280;
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+
+        .card .value {
+            color: #1e3a8a;
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .panel {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(30,58,138,.08);
+            margin-bottom: 18px;
+            overflow: hidden;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 20px;
+            border-bottom: 1px solid #edf1f7;
+        }
+
+        .panel-header h3 {
+            font-size: 18px;
+        }
+
+        .panel-body {
+            padding: 20px;
+        }
+
+        .toolbar {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .field {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .field label {
+            color: #56657a;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        input,
+        select,
+        textarea {
+            border: 1px solid #d7e0ec;
+            border-radius: 8px;
+            padding: 9px 11px;
+            font-size: 14px;
+            outline: none;
+            background: #fff;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,.12);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 70px;
+        }
+
+        .btn {
+            border: 0;
+            padding: 9px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: .15s;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-primary { background: #2563eb; color: #fff; }
+        .btn-success { background: #16a34a; color: #fff; }
+        .btn-warning { background: #f59e0b; color: #fff; }
+        .btn-danger { background: #ef4444; color: #fff; }
+        .btn-plain { background: #edf2f7; color: #415069; }
+        .btn-small { padding: 6px 10px; font-size: 12px; }
+
+        .table-wrap {
+            width: 100%;
+            overflow-x: auto;
+            border: 1px solid #edf1f7;
+            border-radius: 12px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px;
+        }
+
+        th,
+        td {
+            padding: 12px 14px;
+            border-bottom: 1px solid #edf1f7;
+            text-align: left;
+            font-size: 14px;
+            vertical-align: middle;
+        }
+
+        th {
+            background: #f8fafc;
+            color: #56657a;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        tr:hover td {
+            background: #fbfdff;
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .empty {
+            padding: 42px 10px;
+            text-align: center;
+            color: #8a98aa;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 16px;
+            color: #56657a;
+            font-size: 14px;
+        }
+
+        .pagination button {
+            border: 1px solid #d7e0ec;
+            background: #fff;
+            color: #415069;
+            border-radius: 7px;
+            padding: 7px 11px;
+            cursor: pointer;
+        }
+
+        .pagination button:disabled {
+            opacity: .45;
+            cursor: not-allowed;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15,23,42,.52);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-content {
+            width: min(760px, 96vw);
+            max-height: 92vh;
+            overflow-y: auto;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 24px 80px rgba(0,0,0,.24);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 22px;
+            border-bottom: 1px solid #edf1f7;
+        }
+
+        .modal-header h3 {
+            font-size: 18px;
+        }
+
+        .close-btn {
+            border: 0;
+            background: transparent;
+            font-size: 28px;
+            color: #94a3b8;
+            cursor: pointer;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            padding: 20px 22px;
+        }
+
+        .form-item label {
+            display: block;
+            margin-bottom: 7px;
+            color: #56657a;
+            font-size: 14px;
+        }
+
+        .form-item input,
+        .form-item select,
+        .form-item textarea {
+            width: 100%;
+        }
+
+        .form-item.full {
+            grid-column: 1 / -1;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            padding: 16px 22px 22px;
+            border-top: 1px solid #edf1f7;
+        }
+
+        .tree-box {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 12px;
+        }
+
+        .tree-card {
+            border: 1px solid #edf1f7;
+            border-radius: 12px;
+            padding: 14px;
+            background: #fbfdff;
+        }
+
+        .tree-card h4 {
+            margin-bottom: 10px;
+            color: #1e3a8a;
+        }
+
+        .tree-card ul {
+            padding-left: 18px;
+            color: #56657a;
+            line-height: 1.9;
+            font-size: 14px;
+        }
+
+        .api-list {
+            display: grid;
+            gap: 10px;
+        }
+
+        .api-item {
+            display: flex;
+            justify-content: space-between;
+            gap: 14px;
+            border: 1px solid #edf1f7;
+            border-radius: 10px;
+            padding: 12px 14px;
+            background: #fbfdff;
+            font-size: 14px;
+        }
+
+        .method {
+            display: inline-block;
+            min-width: 58px;
+            color: #fff;
+            text-align: center;
+            border-radius: 999px;
+            padding: 3px 8px;
+            font-size: 12px;
+            margin-right: 8px;
+        }
+
+        .GET { background: #2563eb; }
+        .POST { background: #16a34a; }
+        .PUT { background: #f59e0b; }
+        .DELETE { background: #ef4444; }
+
+        .toast {
+            position: fixed;
+            left: 50%;
+            top: 26px;
+            transform: translateX(-50%);
+            background: #111827;
+            color: #fff;
+            border-radius: 999px;
+            padding: 11px 20px;
+            font-size: 14px;
+            z-index: 2000;
+            display: none;
+            box-shadow: 0 12px 36px rgba(0,0,0,.2);
+        }
+
+        @media (max-width: 900px) {
+            .layout { flex-direction: column; }
+            .sidebar { width: 100%; }
+            .cards { grid-template-columns: repeat(2, 1fr); }
+            .form-grid { grid-template-columns: 1fr; }
+            .topbar { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+<div class="layout">
+    <aside class="sidebar">
+        <div class="brand">
+            <h1>合家云<br>社区物业管理系统</h1>
+        </div>
+        <button class="nav-btn active" data-section="community" onclick="switchSection('community')">🏘 小区管理</button>
+        <button class="nav-btn" data-section="dept" onclick="switchSection('dept')">🏢 部门列表</button>
+        <button class="nav-btn" data-section="area" onclick="switchSection('area')">🗺 区域数据</button>
+    </aside>
+
+    <main class="main">
+        <div class="topbar">
+            <div>
+                <h2>合家云社区物业管理系统</h2>
+                <p>社区基础信息、物业部门与区域数据统一管理。</p>
+            </div>
+            <div class="status-pill" id="serviceStatus">接口地址：检测中...</div>
+        </div>
+
+        <div class="cards">
+            <div class="card">
+                <div class="label">小区总数</div>
+                <div class="value" id="communityTotalCard">0</div>
+            </div>
+            <div class="card">
+                <div class="label">部门数量</div>
+                <div class="value" id="deptTotalCard">0</div>
+            </div>
+            <div class="card">
+                <div class="label">省级区域</div>
+                <div class="value" id="areaTotalCard">0</div>
+            </div>
+            <div class="card">
+                <div class="label">系统状态</div>
+                <div class="value" style="font-size: 24px; color: #16a34a;">运行中</div>
+            </div>
+        </div>
+
+        <section class="section active" id="section-community">
+            <div class="panel">
+                <div class="panel-header">
+                    <h3>小区管理</h3>
+                    <button class="btn btn-primary" onclick="openAddModal()">添加小区</button>
+                </div>
+                <div class="panel-body">
+                    <div class="toolbar">
+                        <div class="field">
+                            <label>小区名称</label>
+                            <input type="text" id="searchName" placeholder="请输入小区名称">
+                        </div>
+                        <div class="field">
+                            <label>小区编码</label>
+                            <input type="text" id="searchCode" placeholder="请输入小区编码">
+                        </div>
+                        <button class="btn btn-success" onclick="searchCommunity(true)">搜索</button>
+                        <button class="btn btn-plain" onclick="resetSearch()">重置</button>
+                        <button class="btn btn-warning" onclick="exportExcel()">导出 Excel</button>
+                        <button class="btn btn-plain" onclick="loadCommunityList()">刷新</button>
+                    </div>
+
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>小区ID</th>
+                                <th>小区名称</th>
+                                <th>小区编码</th>
+                                <th>所在地区</th>
+                                <th>详细地址</th>
+                                <th>经度</th>
+                                <th>纬度</th>
+                                <th>部门ID</th>
+                                <th>排序</th>
+                                <th>更新时间</th>
+                                <th>创建时间</th>
+                                <th>备注</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody id="communityTable">
+                            <tr><td colspan="13" class="empty">正在加载...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="pagination" id="pagination"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="section-dept">
+            <div class="panel">
+                <div class="panel-header">
+                    <h3>部门 / 物业公司列表</h3>
+                    <button class="btn btn-plain" onclick="loadDeptList()">刷新部门</button>
+                </div>
+                <div class="panel-body">
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>部门ID</th>
+                                <th>部门名称</th>
+                                <th>上级部门</th>
+                                <th>负责人</th>
+                                <th>电话</th>
+                                <th>邮箱</th>
+                                <th>状态</th>
+                            </tr>
+                            </thead>
+                            <tbody id="deptTable">
+                            <tr><td colspan="7" class="empty">正在加载...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="section-area">
+            <div class="panel">
+                <div class="panel-header">
+                    <h3>区域树</h3>
+                    <button class="btn btn-plain" onclick="loadAreaTree()">刷新区域</button>
+                </div>
+                <div class="panel-body">
+                    <div class="tree-box" id="areaTreeBox">
+                        <div class="empty">正在加载...</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<div class="modal" id="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalTitle">添加小区</h3>
+            <button class="close-btn" onclick="closeModal()">&times;</button>
+        </div>
+        <form id="communityForm">
+            <div class="form-grid">
+                <input type="hidden" id="communityId">
+                <div class="form-item">
+                    <label>小区名称 <span style="color:#ef4444">*</span></label>
+                    <input type="text" id="communityName" placeholder="请输入小区名称" required>
+                </div>
+                <div class="form-item">
+                    <label>小区编码</label>
+                    <input type="text" id="communityCode" placeholder="请输入小区编码">
+                </div>
+                <div class="form-item">
+                    <label>所在省份</label>
+                    <select id="province" onchange="onProvinceChange()"></select>
+                </div>
+                <div class="form-item">
+                    <label>所在城市</label>
+                    <select id="city" onchange="onCityChange()"></select>
+                </div>
+                <div class="form-item">
+                    <label>所在区县</label>
+                    <select id="town"></select>
+                </div>
+                <div class="form-item">
+                    <label>所属部门</label>
+                    <select id="deptId"></select>
+                </div>
+                <div class="form-item">
+                    <label>排序</label>
+                    <input type="number" id="communitySort" placeholder="例如：1">
+                </div>
+                <div class="form-item">
+                    <label>经度</label>
+                    <input type="text" id="communityLongitude" placeholder="例如：116.40">
+                </div>
+                <div class="form-item">
+                    <label>纬度</label>
+                    <input type="text" id="communityLatitude" placeholder="例如：39.90">
+                </div>
+                <div class="form-item full">
+                    <label>详细地址</label>
+                    <input type="text" id="detailedAddress" placeholder="请输入详细地址">
+                </div>
+                <div class="form-item full">
+                    <label>备注</label>
+                    <textarea id="remark" placeholder="请输入备注"></textarea>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-plain" onclick="closeModal()">取消</button>
+                <button type="submit" class="btn btn-primary">保存</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+    const BASE_URL = window.location.protocol === 'file:'
+        ? 'http://localhost:8888/hejiayun'
+        : `${window.location.origin}/hejiayun`;
+    const FALLBACK_AREAS = [
+        { code: 110000, name: '北京市', parentid: 0, children: [
+            { code: 110100, name: '北京市', parentid: 110000, children: [
+                { code: 110101, name: '东城区', parentid: 110100, children: [] },
+                { code: 110105, name: '朝阳区', parentid: 110100, children: [] },
+                { code: 110114, name: '昌平区', parentid: 110100, children: [] }
+            ] }
+        ] },
+        { code: 310000, name: '上海市', parentid: 0, children: [
+            { code: 310100, name: '上海市', parentid: 310000, children: [
+                { code: 310115, name: '浦东新区', parentid: 310100, children: [] },
+                { code: 310106, name: '静安区', parentid: 310100, children: [] }
+            ] }
+        ] },
+        { code: 440000, name: '广东省', parentid: 0, children: [
+            { code: 440100, name: '广州市', parentid: 440000, children: [
+                { code: 440106, name: '天河区', parentid: 440100, children: [] },
+                { code: 440103, name: '荔湾区', parentid: 440100, children: [] }
+            ] },
+            { code: 440300, name: '深圳市', parentid: 440000, children: [
+                { code: 440305, name: '南山区', parentid: 440300, children: [] },
+                { code: 440306, name: '宝安区', parentid: 440300, children: [] }
+            ] }
+        ] }
+    ];
+
+    let currentPage = 1;
+    let pageSize = 10;
+    let totalRows = 0;
+    let areaTree = [];
+    let deptList = [];
+    let lastSearchName = '';
+    let lastSearchCode = '';
+
+    function escapeHtml(value) {
+        return String(value ?? '').replace(/[&<>'"]/g, function (char) {
+            return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[char];
+        });
+    }
+
+    function showToast(message) {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.style.display = 'block';
+        clearTimeout(showToast.timer);
+        showToast.timer = setTimeout(() => toast.style.display = 'none', 2200);
+    }
+
+    async function request(path, options = {}) {
+        const response = await fetch(`${BASE_URL}${path}`, options);
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+        return response.json();
+    }
+
+    function buildQuery(params) {
+        const query = new URLSearchParams();
+        Object.keys(params).forEach(key => {
+            const value = params[key];
+            if (value !== undefined && value !== null && value !== '') {
+                query.append(key, value);
+            }
+        });
+        const text = query.toString();
+        return text ? `?${text}` : '';
+    }
+
+    function isSuccess(result) {
+        return result && (result.code === 200 || result.code === '200');
+    }
+
+    function switchSection(section) {
+        document.querySelectorAll('.section').forEach(item => item.classList.remove('active'));
+        document.querySelectorAll('.nav-btn').forEach(item => item.classList.remove('active'));
+        document.getElementById(`section-${section}`).classList.add('active');
+        document.querySelector(`[data-section="${section}"]`).classList.add('active');
+    }
+
+    async function getCommunityList() {
+        const query = buildQuery({
+            pageNum: currentPage,
+            pageSize,
+            communityName: lastSearchName,
+            communityCode: lastSearchCode
+        });
+        return request(`/community/list${query}`);
+    }
+
+    async function loadCommunityList() {
+        const tbody = document.getElementById('communityTable');
+        tbody.innerHTML = '<tr><td colspan="13" class="empty">正在加载...</td></tr>';
+        try {
+            const data = await getCommunityList();
+            renderCommunityTable(data);
+            document.getElementById('serviceStatus').textContent = `接口地址：${BASE_URL}`;
+        } catch (error) {
+            console.error('获取小区列表失败:', error);
+            tbody.innerHTML = '<tr><td colspan="13" class="empty">获取小区列表失败，请确认后端服务已启动</td></tr>';
+            document.getElementById('pagination').innerHTML = '';
+            document.getElementById('serviceStatus').textContent = '接口连接失败，请检查后端服务';
+            showToast('获取小区列表失败');
+        }
+    }
+
+    function renderCommunityTable(data) {
+        const tbody = document.getElementById('communityTable');
+        const rows = data.rows || [];
+        totalRows = Number(data.total || rows.length || 0);
+        document.getElementById('communityTotalCard').textContent = totalRows;
+
+        let displayRows = rows;
+        if (rows.length > pageSize) {
+            const start = (currentPage - 1) * pageSize;
+            displayRows = rows.slice(start, start + pageSize);
+        }
+
+        if (!displayRows.length) {
+            tbody.innerHTML = '<tr><td colspan="13" class="empty">暂无小区数据</td></tr>';
+            renderPagination();
+            return;
+        }
+
+        tbody.innerHTML = displayRows.map(item => {
+            const id = item.communityId || '';
+            const provinceName = item.communityProvinceName || item.communityProvenceName || getAreaName(item.communityProvinceCode || item.communityProvenceCode);
+            const cityName = item.communityCityName || getAreaName(item.communityCityCode);
+            const townName = item.communityTownName || getAreaName(item.communityTownCode);
+            const address = item.communityDetailedAddress || item.communityDetailAddress || '-';
+            const lng = item.communityLongitude || item.longitude || '-';
+            const lat = item.communityLatitude || item.latitude || '-';
+            return `
+                <tr>
+                    <td>${escapeHtml(id || '-')}</td>
+                    <td>${escapeHtml(item.communityName || '-')}</td>
+                    <td>${escapeHtml(item.communityCode || '-')}</td>
+                    <td>${escapeHtml([provinceName, cityName, townName].filter(Boolean).join(' / ') || '-')}</td>
+                    <td>${escapeHtml(address)}</td>
+                    <td>${escapeHtml(lng)}</td>
+                    <td>${escapeHtml(lat)}</td>
+                    <td>${escapeHtml(item.deptId || '-')}</td>
+                    <td>${escapeHtml(item.communitySort || '-')}</td>
+                    <td>${escapeHtml(item.updateTime || '-')}</td>
+                    <td>${escapeHtml(item.createTime || '-')}</td>
+                    <td>${escapeHtml(item.remark || '-')}</td>
+                    <td>
+                        <div class="actions">
+                            <button class="btn btn-success btn-small" onclick="openEditModal('${escapeHtml(id)}')">编辑</button>
+                            <button class="btn btn-danger btn-small" onclick="handleDelete('${escapeHtml(id)}')">删除</button>
+                        </div>
+                    </td>
+                </tr>`;
+        }).join('');
+        renderPagination();
+    }
+
+    function renderPagination() {
+        const totalPages = Math.max(1, Math.ceil(totalRows / pageSize));
+        currentPage = Math.min(currentPage, totalPages);
+        document.getElementById('pagination').innerHTML = `
+            <button onclick="goToPage(1)" ${currentPage === 1 ? 'disabled' : ''}>首页</button>
+            <button onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>上一页</button>
+            <span>第 ${currentPage} 页 / 共 ${totalPages} 页，共 ${totalRows} 条</span>
+            <button onclick="goToPage(${currentPage + 1})" ${currentPage >= totalPages ? 'disabled' : ''}>下一页</button>
+            <button onclick="goToPage(${totalPages})" ${currentPage >= totalPages ? 'disabled' : ''}>末页</button>
+        `;
+    }
+
+    function goToPage(page) {
+        const totalPages = Math.max(1, Math.ceil(totalRows / pageSize));
+        if (page < 1 || page > totalPages) return;
+        currentPage = page;
+        loadCommunityList();
+    }
+
+    function searchCommunity(resetPage) {
+        if (resetPage) currentPage = 1;
+        lastSearchName = document.getElementById('searchName').value.trim();
+        lastSearchCode = document.getElementById('searchCode').value.trim();
+        loadCommunityList();
+    }
+
+    function resetSearch() {
+        document.getElementById('searchName').value = '';
+        document.getElementById('searchCode').value = '';
+        currentPage = 1;
+        lastSearchName = '';
+        lastSearchCode = '';
+        loadCommunityList();
+    }
+
+    function openAddModal() {
+        document.getElementById('modalTitle').textContent = '添加小区';
+        document.getElementById('communityForm').reset();
+        document.getElementById('communityId').value = '';
+        renderProvinceOptions();
+        renderDeptOptions('');
+        document.getElementById('modal').style.display = 'flex';
+    }
+
+    async function openEditModal(communityId) {
+        try {
+            const data = await request(`/community/${communityId}`);
+            if (!isSuccess(data) || !data.data) {
+                showToast(data.message || '获取小区详情失败');
+                return;
+            }
+            const item = data.data;
+            document.getElementById('modalTitle').textContent = '修改小区';
+            document.getElementById('communityId').value = item.communityId || '';
+            document.getElementById('communityName').value = item.communityName || '';
+            document.getElementById('communityCode').value = item.communityCode || '';
+            document.getElementById('detailedAddress').value = item.communityDetailedAddress || item.communityDetailAddress || '';
+            document.getElementById('communityLongitude').value = item.communityLongitude || item.longitude || '';
+            document.getElementById('communityLatitude').value = item.communityLatitude || item.latitude || '';
+            document.getElementById('communitySort').value = item.communitySort || '';
+            document.getElementById('remark').value = item.remark || '';
+            renderProvinceOptions(item.communityProvinceCode || item.communityProvenceCode, item.communityCityCode, item.communityTownCode);
+            renderDeptOptions(item.deptId || '');
+            document.getElementById('modal').style.display = 'flex';
+        } catch (error) {
+            console.error('获取小区详情失败:', error);
+            showToast('获取小区详情失败');
+        }
+    }
+
+    function closeModal() {
+        document.getElementById('modal').style.display = 'none';
+    }
+
+    document.getElementById('communityForm').addEventListener('submit', async function (event) {
+        event.preventDefault();
+        const communityId = document.getElementById('communityId').value;
+        const community = {
+            communityId: communityId || null,
+            communityName: document.getElementById('communityName').value.trim(),
+            communityCode: document.getElementById('communityCode').value.trim(),
+            communityProvinceCode: document.getElementById('province').value,
+            communityCityCode: document.getElementById('city').value,
+            communityTownCode: document.getElementById('town').value,
+            communityDetailedAddress: document.getElementById('detailedAddress').value.trim(),
+            communityLongitude: document.getElementById('communityLongitude').value.trim(),
+            communityLatitude: document.getElementById('communityLatitude').value.trim(),
+            deptId: document.getElementById('deptId').value || null,
+            communitySort: document.getElementById('communitySort').value || null,
+            remark: document.getElementById('remark').value.trim(),
+            selected: [
+                document.getElementById('province').value,
+                document.getElementById('city').value,
+                document.getElementById('town').value
+            ].filter(Boolean)
+        };
+
+        if (!community.communityName) {
+            showToast('请填写小区名称');
+            return;
+        }
+
+        try {
+            const result = await request('/community', {
+                method: communityId ? 'PUT' : 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(community)
+            });
+            if (isSuccess(result)) {
+                showToast(communityId ? '修改成功' : '添加成功');
+                closeModal();
+                loadCommunityList();
+            } else {
+                showToast(result.message || '保存失败');
+            }
+        } catch (error) {
+            console.error('保存小区失败:', error);
+            showToast('保存失败，请检查接口');
+        }
+    });
+
+    async function handleDelete(communityId) {
+        if (!communityId || !confirm('确定要删除这个小区吗？')) return;
+        try {
+            const result = await request(`/community/${communityId}`, { method: 'DELETE' });
+            if (isSuccess(result)) {
+                showToast('删除成功');
+                loadCommunityList();
+            } else {
+                showToast(result.message || '删除失败');
+            }
+        } catch (error) {
+            console.error('删除小区失败:', error);
+            showToast('删除失败，请检查接口');
+        }
+    }
+
+    function exportExcel() {
+        const query = buildQuery({ communityName: lastSearchName, communityCode: lastSearchCode });
+        window.location.href = `${BASE_URL}/exportExcel/exportCommunityExcel${query}`;
+        showToast('正在导出，请查看浏览器下载');
+    }
+
+    async function loadAreaTree() {
+        try {
+            const result = await request('/system/area/tree');
+            areaTree = isSuccess(result) && Array.isArray(result.data) && result.data.length ? result.data : FALLBACK_AREAS;
+        } catch (error) {
+            console.warn('区域接口不可用，使用前端兜底数据:', error);
+            areaTree = FALLBACK_AREAS;
+        }
+        document.getElementById('areaTotalCard').textContent = areaTree.length;
+        renderAreaTree();
+        renderProvinceOptions();
+    }
+
+    function renderAreaTree() {
+        const box = document.getElementById('areaTreeBox');
+        if (!areaTree.length) {
+            box.innerHTML = '<div class="empty">暂无区域数据</div>';
+            return;
+        }
+        box.innerHTML = areaTree.map(province => `
+            <div class="tree-card">
+                <h4>${escapeHtml(province.name)}</h4>
+                ${renderAreaChildren(province.children || [])}
+            </div>
+        `).join('');
+    }
+
+    function renderAreaChildren(children) {
+        if (!children.length) return '<div style="color:#94a3b8;font-size:13px;">暂无下级区域</div>';
+        return `<ul>${children.map(child => `<li>${escapeHtml(child.name)}${renderAreaChildren(child.children || [])}</li>`).join('')}</ul>`;
+    }
+
+    function renderProvinceOptions(selectedProvince, selectedCity, selectedTown) {
+        const provinceSelect = document.getElementById('province');
+        const currentProvince = selectedProvince || provinceSelect.value || areaTree[0]?.code || '';
+        provinceSelect.innerHTML = areaTree.map(item => `
+            <option value="${escapeHtml(item.code)}" ${String(item.code) === String(currentProvince) ? 'selected' : ''}>${escapeHtml(item.name)}</option>
+        `).join('');
+        renderCityOptions(selectedCity, selectedTown);
+    }
+
+    function renderCityOptions(selectedCity, selectedTown) {
+        const province = areaTree.find(item => String(item.code) === String(document.getElementById('province').value));
+        const cities = province?.children || [];
+        const citySelect = document.getElementById('city');
+        const currentCity = selectedCity || citySelect.value || cities[0]?.code || '';
+        citySelect.innerHTML = cities.map(item => `
+            <option value="${escapeHtml(item.code)}" ${String(item.code) === String(currentCity) ? 'selected' : ''}>${escapeHtml(item.name)}</option>
+        `).join('');
+        renderTownOptions(selectedTown);
+    }
+
+    function renderTownOptions(selectedTown) {
+        const province = areaTree.find(item => String(item.code) === String(document.getElementById('province').value));
+        const city = (province?.children || []).find(item => String(item.code) === String(document.getElementById('city').value));
+        const towns = city?.children || [];
+        const townSelect = document.getElementById('town');
+        const currentTown = selectedTown || townSelect.value || towns[0]?.code || '';
+        townSelect.innerHTML = towns.map(item => `
+            <option value="${escapeHtml(item.code)}" ${String(item.code) === String(currentTown) ? 'selected' : ''}>${escapeHtml(item.name)}</option>
+        `).join('');
+    }
+
+    function onProvinceChange() {
+        renderCityOptions('', '');
+    }
+
+    function onCityChange() {
+        renderTownOptions('');
+    }
+
+    function getAreaName(code) {
+        if (!code) return '';
+        const stack = [...areaTree];
+        while (stack.length) {
+            const item = stack.shift();
+            if (String(item.code) === String(code)) return item.name;
+            stack.push(...(item.children || []));
+        }
+        return '';
+    }
+
+    async function loadDeptList() {
+        const tbody = document.getElementById('deptTable');
+        tbody.innerHTML = '<tr><td colspan="7" class="empty">正在加载...</td></tr>';
+        try {
+            const result = await request('/system/dept/list');
+            deptList = isSuccess(result) && Array.isArray(result.data) ? flattenDept(result.data) : [];
+        } catch (error) {
+            console.warn('获取部门列表失败:', error);
+            deptList = [];
+        }
+        document.getElementById('deptTotalCard').textContent = deptList.length;
+        renderDeptTable();
+        renderDeptOptions(document.getElementById('deptId')?.value || '');
+    }
+
+    function flattenDept(list) {
+        const result = [];
+        (list || []).forEach(item => {
+            result.push(item);
+            if (item.children && item.children.length) {
+                result.push(...flattenDept(item.children));
+            }
+        });
+        return result;
+    }
+
+    function renderDeptTable() {
+        const tbody = document.getElementById('deptTable');
+        if (!deptList.length) {
+            tbody.innerHTML = '<tr><td colspan="7" class="empty">暂无部门数据</td></tr>';
+            return;
+        }
+        tbody.innerHTML = deptList.map(item => `
+            <tr>
+                <td>${escapeHtml(item.deptId || '-')}</td>
+                <td>${escapeHtml(item.deptName || '-')}</td>
+                <td>${escapeHtml(item.parentName || item.parentId || '-')}</td>
+                <td>${escapeHtml(item.leader || '-')}</td>
+                <td>${escapeHtml(item.phone || '-')}</td>
+                <td>${escapeHtml(item.email || '-')}</td>
+                <td>${escapeHtml(item.status === '0' ? '正常' : (item.status === '1' ? '停用' : '-'))}</td>
+            </tr>
+        `).join('');
+    }
+
+    function renderDeptOptions(selectedDeptId) {
+        const select = document.getElementById('deptId');
+        if (!select) return;
+        if (!deptList.length) {
+            select.innerHTML = '<option value="">暂无部门数据</option>';
+            return;
+        }
+        select.innerHTML = '<option value="">请选择部门</option>' + deptList.map(item => `
+            <option value="${escapeHtml(item.deptId)}" ${String(item.deptId) === String(selectedDeptId) ? 'selected' : ''}>${escapeHtml(item.deptName || item.deptId)}</option>
+        `).join('');
+    }
+
+    window.onclick = function (event) {
+        if (event.target === document.getElementById('modal')) {
+            closeModal();
+        }
+    };
+
+    async function init() {
+        await Promise.allSettled([loadAreaTree(), loadDeptList()]);
+        await loadCommunityList();
+    }
+
+    init();
+</script>
+</body>
+</html>

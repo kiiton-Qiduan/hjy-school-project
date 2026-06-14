@@ -55,7 +55,7 @@ rows	小区数据信息集合
 	"msg": "查询成功"
 }
 新增小区
-接口地址: http://localhost:9999/hejiayun/community
+接口地址: http://localhost:8888/hejiayun/community
 
 请求方式: POST
 
